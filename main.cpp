@@ -1,63 +1,79 @@
+
+#include "SDL.h"
+#include "clases/Line.h" // Asegúrate de que la ruta al archivo de cabecera sea correcta
+#include "clases/Triangle.h" // Incluir la clase Triangle
+#include "clases/Face.h" // Incluir la estructura Face
+#include "clases/Mesh.h" // Incluir la clase Mesh
+#include <glm/glm.hpp>
 #include <iostream>
-#include <SDL.h>
 
-void render(SDL_Renderer* renderer);
+SDL_Surface* surface = nullptr;
 
-// Función para crear una ventana de SDL y ejecutar un bucle de renderizado
 int main(int argc, char* argv[]) {
     // Inicializar SDL
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        std::cerr << "Error al inicializar SDL: " << SDL_GetError() << std::endl;
-        return 1;
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        SDL_Log("SDL no pudo inicializar: %s", SDL_GetError());
+        return -1;
     }
 
-    // Crear una ventana SDL
-    SDL_Window* window = SDL_CreateWindow("Renderizado de Gráficos", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_SHOWN);
-    if (window == nullptr) {
-        std::cerr << "Error al crear la ventana: " << SDL_GetError() << std::endl;
-        return 2;
+    // Crear una ventana de SDL
+    SDL_Window* window = SDL_CreateWindow("Mesh Test - Triangulated Cube", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, 0);
+    if (!window) {
+        SDL_Log("No se pudo crear la ventana: %s", SDL_GetError());
+        SDL_Quit();
+        return -1;
     }
 
-    // Crear un renderizador
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (renderer == nullptr) {
-        std::cerr << "Error al crear el renderizador: " << SDL_GetError() << std::endl;
-        return 3;
-    }
+    // Crear una superficie en la ventana
+    surface = SDL_GetWindowSurface(window);
 
-    // Main loop de renderizado
-    bool quit = false;
+    // Crear una malla y agregar vértices y caras trianguladas
+    Mesh cube;
+    cube.addVertex(Vertex(1.125986f, 0.781798f, -1.058748f)); // Vértice 0
+    cube.addVertex(Vertex(0.074502f, -0.860990f, -1.501048f)); // Vértice 1
+    cube.addVertex(Vertex(1.568286f, 0.015753f, 0.735004f)); // Vértice 2
+    cube.addVertex(Vertex(0.516802f, -1.627034f, 0.292704f)); // Vértice 3
+    cube.addVertex(Vertex(-0.516802f, 1.627034f, -0.292704f)); // Vértice 4
+    cube.addVertex(Vertex(-1.568286f, -0.015753f, -0.735004f)); // Vértice 5
+    cube.addVertex(Vertex(-0.074502f, 0.860990f, 1.501048f)); // Vértice 6
+    cube.addVertex(Vertex(-1.125986f, -0.781798f, 1.058748f)); // Vértice 7
+
+    // Agregar caras trianguladas (los índices ya están ajustados para comenzar en 0)
+    cube.addFace(Face({4, 2, 0}));
+    cube.addFace(Face({2, 7, 3}));
+    cube.addFace(Face({6, 5, 7}));
+    cube.addFace(Face({1, 7, 5}));
+    cube.addFace(Face({0, 3, 1}));
+    cube.addFace(Face({4, 1, 5}));
+    cube.addFace(Face({4, 6, 2}));
+    cube.addFace(Face({2, 6, 7}));
+    cube.addFace(Face({6, 4, 5}));
+    cube.addFace(Face({1, 3, 7}));
+    cube.addFace(Face({0, 2, 3}));
+    cube.addFace(Face({4, 0, 1}));
+
+    // Dibujar el cubo
+    cube.draw();
+
+    // Actualizar la superficie de la ventana
+    SDL_UpdateWindowSurface(window);
+    SDL_Delay(2000); // Esperar 2 segundos antes de cerrar la ventana
+
+
+    // Esperar un evento para cerrar
     SDL_Event e;
-    while (!quit) {
+    bool running = true;
+    while (running) {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
-                quit = true;
+                running = false;
             }
         }
-
-        // Lógica de actualización aquí
-
-        // Renderizar
-        render(renderer); // Llamar a la función de renderizado
-
-        // Actualizar la ventana
-        SDL_RenderPresent(renderer);
     }
 
-    // Liberar recursos
-    SDL_DestroyRenderer(renderer);
+    // Limpiar antes de salir
     SDL_DestroyWindow(window);
     SDL_Quit();
 
     return 0;
-}
-
-// Función de renderizado que tiene acceso al SDL_Renderer
-void render(SDL_Renderer* renderer) {
-    // Lógica de dibujo aquí
-
-    // Por ejemplo, dibujar un rectángulo rojo en el centro de la ventana
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Color rojo
-    SDL_Rect rect = {300, 250, 200, 100}; // Coordenadas y dimensiones del rectángulo
-    SDL_RenderFillRect(renderer, &rect);
 }

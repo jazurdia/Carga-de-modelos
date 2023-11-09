@@ -16,6 +16,13 @@ add_executable(Flat_Shading main.cpp
         clases/Color.cpp
         clases/Color.h
         clases/DrawPoint/DrawPoint.cpp
-        clases/DrawPoint/DrawPoint.h)
+        clases/DrawPoint/DrawPoint.h
+        clases/Vertex.h
+        clases/Line.cpp
+        clases/Line.cpp
+        clases/Triangle.cpp
+        clases/Mesh.cpp
+        clases/Mesh.cpp
+)
 
 target_link_libraries(${PROJECT_NAME} SDL2main SDL2 glm::glm)

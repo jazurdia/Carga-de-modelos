@@ -1,55 +1,23 @@
-#include <iostream>
-#include <SDL.h>
 #include "DrawPoint.h"
 
-int main() {
-    // Inicializar SDL
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        std::cerr << "Error al inicializar SDL: " << SDL_GetError() << std::endl;
-        return 1;
+// Constructor implementation
+DrawPoint::DrawPoint(SDL_Renderer* renderer, SDL_Color color, int screenWidth, int screenHeight) {
+    this->renderer = renderer;
+    this->pointColor = color;
+    this->screenWidth = screenWidth;
+    this->screenHeight = screenHeight;
+}
+
+// Method to draw a point at a position represented by glm::vec3
+void DrawPoint::draw(glm::vec3 position) {
+    // Convertimos las coordenadas de glm a las de SDL, ignorando la componente z
+    int x = static_cast<int>(position.x);
+    int y = static_cast<int>(position.y);
+    
+    // Comprobamos si el punto está dentro de los límites de la pantalla
+    if (x >= 0 && y >= 0 && x < screenWidth && y < screenHeight) {
+        SDL_SetRenderDrawColor(renderer, pointColor.r, pointColor.g, pointColor.b, pointColor.a);
+        SDL_RenderDrawPoint(renderer, x, y);
     }
-
-    // Crear una ventana SDL
-    SDL_Window* window = SDL_CreateWindow("Dibujar Punto", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_SHOWN);
-    if (window == nullptr) {
-        std::cerr << "Error al crear la ventana: " << SDL_GetError() << std::endl;
-        return 2;
-    }
-
-    // Crear un renderizador
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (renderer == nullptr) {
-        std::cerr << "Error al crear el renderizador: " << SDL_GetError() << std::endl;
-        return 3;
-    }
-
-    // Color para el punto
-    SDL_Color puntoColor = {255, 0, 0, 255};  // Rojo
-
-    // Crear un objeto DrawPoint
-    DrawPoint drawPoint(renderer, puntoColor);
-
-    // Dibujar un punto en las coordenadas (400, 300)
-    drawPoint.draw(400, 300);
-
-    // Actualizar la ventana
-    SDL_RenderPresent(renderer);
-
-    // Esperar hasta que se cierre la ventana
-    bool quit = false;
-    SDL_Event e;
-    while (!quit) {
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) {
-                quit = true;
-            }
-        }
-    }
-
-    // Liberar recursos
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-
-    return 0;
+    // Si el punto está fuera de la pantalla, no hacemos nada (SDL ya maneja esto, pero evitamos llamadas innecesarias)
 }
