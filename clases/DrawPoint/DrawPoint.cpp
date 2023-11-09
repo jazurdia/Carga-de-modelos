@@ -1,10 +1,8 @@
 #include <iostream>
 #include <SDL.h>
+#include "DrawPoint.h"
 
-void render(SDL_Renderer* renderer);
-
-// Función para crear una ventana de SDL y ejecutar un bucle de renderizado
-int main(int argc, char* argv[]) {
+int main() {
     // Inicializar SDL
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         std::cerr << "Error al inicializar SDL: " << SDL_GetError() << std::endl;
@@ -12,7 +10,7 @@ int main(int argc, char* argv[]) {
     }
 
     // Crear una ventana SDL
-    SDL_Window* window = SDL_CreateWindow("Renderizado de Gráficos", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_SHOWN);
+    SDL_Window* window = SDL_CreateWindow("Dibujar Punto", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_SHOWN);
     if (window == nullptr) {
         std::cerr << "Error al crear la ventana: " << SDL_GetError() << std::endl;
         return 2;
@@ -25,7 +23,19 @@ int main(int argc, char* argv[]) {
         return 3;
     }
 
-    // Main loop de renderizado
+    // Color para el punto
+    SDL_Color puntoColor = {255, 0, 0, 255};  // Rojo
+
+    // Crear un objeto DrawPoint
+    DrawPoint drawPoint(renderer, puntoColor);
+
+    // Dibujar un punto en las coordenadas (400, 300)
+    drawPoint.draw(400, 300);
+
+    // Actualizar la ventana
+    SDL_RenderPresent(renderer);
+
+    // Esperar hasta que se cierre la ventana
     bool quit = false;
     SDL_Event e;
     while (!quit) {
@@ -34,14 +44,6 @@ int main(int argc, char* argv[]) {
                 quit = true;
             }
         }
-
-        // Lógica de actualización aquí
-
-        // Renderizar
-        render(renderer); // Llamar a la función de renderizado
-
-        // Actualizar la ventana
-        SDL_RenderPresent(renderer);
     }
 
     // Liberar recursos
@@ -50,14 +52,4 @@ int main(int argc, char* argv[]) {
     SDL_Quit();
 
     return 0;
-}
-
-// Función de renderizado que tiene acceso al SDL_Renderer
-void render(SDL_Renderer* renderer) {
-    // Lógica de dibujo aquí
-
-    // Por ejemplo, dibujar un rectángulo rojo en el centro de la ventana
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Color rojo
-    SDL_Rect rect = {300, 250, 200, 100}; // Coordenadas y dimensiones del rectángulo
-    SDL_RenderFillRect(renderer, &rect);
 }
