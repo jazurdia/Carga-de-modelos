@@ -12,17 +12,9 @@ link_directories(${SDL2_LIB_DIR})
 find_package(glm CONFIG REQUIRED)
 
 
-add_executable(Flat_Shading main.cpp
-        clases/Color.cpp
-        clases/Color.h
-        clases/DrawPoint/DrawPoint.cpp
-        clases/DrawPoint/DrawPoint.h
-        clases/Vertex.h
-        clases/Line.cpp
-        clases/Line.cpp
-        clases/Triangle.cpp
-        clases/Mesh.cpp
-        clases/Mesh.cpp
+add_executable(Flat_Shading
+        src/main.cpp
+        src/gl.h
 )
 
 target_link_libraries(${PROJECT_NAME} SDL2main SDL2 glm::glm)
