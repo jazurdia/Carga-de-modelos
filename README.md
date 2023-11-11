@@ -1,4 +1,4 @@
-# Carga de Modelos
+# Loading Models in C++
 
 ## Description
 This project is a simple 3D rendering application written in C++ using SDL for graphics rendering. It loads 3D models from OBJ files. The main demonstration is with a model named `nave_espacial.obj`, likely a spaceship.
