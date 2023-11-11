@@ -1,7 +1,7 @@
-# Flat Shading Renderer
+# Carga de Modelos
 
 ## Description
-This project is a simple 3D rendering application written in C++ using SDL for graphics rendering. It loads 3D models from OBJ files and applies a flat shading effect to them. The main demonstration is with a model named `nave_espacial.obj`, likely a spaceship.
+This project is a simple 3D rendering application written in C++ using SDL for graphics rendering. It loads 3D models from OBJ files. The main demonstration is with a model named `nave_espacial.obj`, likely a spaceship.
 
 ![nave_espacial.png](nave_espacial.png)
 ![2023-11-10 17-59-17.gif](2023-11-10%2017-59-17.gif)
